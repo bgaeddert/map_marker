@@ -9,7 +9,11 @@
   },
   "dependencies": {
     "core-js": "^3.8.3",
-    "vue": "^3.2.13"
+    "element-plus": "^2.2.13",
+    "json-editor-vue": "^0.4.13",
+    "vue": "^3.2.37",
+    "vue-loading-overlay": "^5.0.3",
+    "vue3-google-map": "^0.13.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
@@ -32,7 +36,9 @@
     "parserOptions": {
       "parser": "@babel/eslint-parser"
     },
-    "rules": {}
+    "rules": {
+      "vue/no-unused-components": "off"
+    }
   },
   "browserslist": [
     "> 1%",
