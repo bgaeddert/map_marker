@@ -29,7 +29,7 @@
         </MarkerCluster>
 
         <Marker v-for="(store, i) in stores"
-                @click="handleMarkerClick(location.idx)"
+                @click="handleMarkerClick(store.idx)"
                 :options="{ position: store.position, icon: pinSymbol(store.type) }"
                 :key="i"
         >
@@ -157,9 +157,9 @@ export default defineComponent({
           return []
         }
 
-        return this.posData.filter((m) => m.type === 'store').map((m, i) => {
+        return this.posData.map((m, i) => {
           return {...m, idx: i, position: {lat: parseFloat(m.latitude), lng: parseFloat(m.longitude)}}
-        })
+        }).filter((m) => m.type === 'store')
       }
     },
     center: {
@@ -235,8 +235,6 @@ export default defineComponent({
       this.lastInfoWindow = this.$refs[ref][index].infoWindow;
     },
     handleCloseInfoWindow: function () {
-      console.log(111)
-
       this.lastInfoWindow = null;
     }
   },

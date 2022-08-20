@@ -5,6 +5,8 @@
       <el-main>
         <el-row :gutter="20">
           <el-col :span="8">
+            <el-button @click="loadDemoData">Load Demo Data</el-button>
+            <el-button @click="clearData">Clear Data</el-button>
             <control-block
                 :pos-data="posData"
                 :scroll-ref-index="refIdx"
@@ -86,6 +88,18 @@ export default {
     },
     handleBoundLocations(boundLocations){
       this.boundLocations = boundLocations;
+    },
+    loadDemoData(){
+      fetch('/medellin.json')
+          .then((response) => response.json())
+          .then((data) => {
+            localStorage.setItem("properties", JSON.stringify(data));
+            this.posData = data;
+          });
+    },
+    clearData(){
+      localStorage.setItem("properties", JSON.stringify([]));
+      this.posData = [];
     }
   },
   data() {
@@ -100,6 +114,11 @@ export default {
   },
   mounted() {
       this.posData = JSON.parse(localStorage.getItem("properties")) || [];
+
+      if(this.posData.length){
+        this.center = {lat: parseFloat(this.posData[0].latitude), lng: parseFloat(this.posData[0].longitude)}
+      }
+
       this.typeConfigs = JSON.parse(localStorage.getItem("typeConfigs")) || [];
   },
 }
