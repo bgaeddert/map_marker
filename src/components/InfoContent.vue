@@ -5,11 +5,11 @@
         <h3>{{ location.title }}</h3>
       </el-col>
     </el-row>
-    <!--<el-row>-->
-    <!--  <el-col>-->
-    <!--    <el-image :src="location.imageLink"/>-->
-    <!--  </el-col>-->
-    <!--</el-row>-->
+    <el-row>
+      <el-col>
+        <el-image :src="location.imageLink"/>
+      </el-col>
+    </el-row>
     <el-row>
       <el-col>
         <a :href="location.link" target="_blank">More info...</a>

@@ -1,64 +1,57 @@
 <template>
   <el-tabs v-model="activeName" class="demo-tabs">
     <el-tab-pane label="Positions" name="list">
-      <h3>{{ posData.length }} Locations</h3>
-
-      <el-row class="row-bg" justify="center">
-        <el-pagination background @current-change="handlePageChange" small layout="prev, pager, next"
-                       :page-size="pageSize" current-page="currentPage" :total="posData.length"/>
-      </el-row>
-
-      <div class="position-con" ref="posCon">
-        <div class="position-item"
-             v-for="(item, i) in locations"
-             ref="items"
-             v-bind:key="i"
-             :class="{ 'alert-bg': alertBackground === i }"
-        >
-          <position-block
-              v-bind="$attrs"
-              :index="i"
-              :idx="i"
-              :title="item.title"
-              :latitude="item.latitude"
-              :longitude="item.longitude"
-              :link="item.link"
-              :image-link="item.imageLink"
-              :type="item.type"
-          ></position-block>
-        </div>
-
-        <el-divider/>
-      </div>
+      <detail-list
+          v-bind="$attrs"
+          :pos-data="posData"
+      />
     </el-tab-pane>
     <el-tab-pane label="Preview" name="preview">
-      <h3>{{ boundedLocations.length }} Locations</h3>
+      <div v-if="!currentPreview"><h3>Select a marker on the map...</h3></div>
 
-      <div class="position-con" ref="boundCon">
-        <preview-block
-            v-if="currentPreview"
+      <div v-if="currentPreview">
+        <div v-if="!currentPreview.imageLink">
+          <el-skeleton style="width: 240px">
+            <template #template>
+              <el-skeleton-item variant="image" style="width: 240px; height: 240px"/>
+            </template>
+          </el-skeleton>
+        </div>
+
+        <div v-if="currentPreview.imageLink">
+          <el-card :body-style="{ padding: '0px' }">
+            <el-image
+                :src="currentPreview.imageLink"
+                class="image"
+            />
+          </el-card>
+        </div>
+
+        <position-block
             v-bind="$attrs"
-            :idx="currentPreview.posIdx"
+            :idx="currentPreview.idx"
             :title="currentPreview.title"
             :latitude="currentPreview.latitude"
             :longitude="currentPreview.longitude"
             :link="currentPreview.link"
             :image-link="currentPreview.imageLink"
             :type="currentPreview.type"
-            :details="currentPreview.details"
-        ></preview-block>
+        ></position-block>
+      </div>
+    </el-tab-pane>
+    <el-tab-pane label="Nearest" name="nearest">
+      <h3>{{ (boundedLocations || []).length }} Locations</h3>
 
+      <div class="position-con" ref="boundCon">
         <div class="position-item"
              v-for="(item, i) in boundedLocations"
              v-bind:key="i"
              ref="boundItems"
              :class="{ 'alert-bg': alertBackground === item.posIdx }"
         >
-          {{i}} - {{item.posIdx}}
           <preview-block
               v-bind="$attrs"
-              :index="i"
-              :idx="i"
+              :idx="item.posIdx"
               :title="item.title"
               :latitude="item.latitude"
               :longitude="item.longitude"
@@ -83,17 +76,19 @@
 
 <script>
 import JsonDataBlock from "@/components/JsonDataBlock";
-import PositionBlock from "@/components/PositionBlock";
 import TypeBlock from "@/components/TypeBlock";
 import PreviewBlock from "@/components/PreviewBlock";
+import DetailList from "@/components/DetailList";
+import PositionBlock from "@/components/PositionBlock";
 
 export default {
   name: "ControlBlock",
   components: {
+    DetailList,
     PreviewBlock,
     JsonDataBlock,
-    PositionBlock,
     TypeBlock,
+    PositionBlock,
   },
   props: {
     posData: Array,
@@ -104,24 +99,17 @@ export default {
     return {
       activeName: 'list',
       alertBackground: 0,
-      currentPage: '',
-      pageSize: 50,
-      locations: this.posData.slice(0, this.pageSize - 1),
       currentPreview: null,
     }
   },
   watch: {
-    posData: {
-      handler() {
-        this.handlePageChange(1)
-      },
-      immediate: true
-    },
     scrollRefIndex: {
       handler(index) {
-        console.log(index)
+        if(!this.posData[index]){
+          return null;
+        }
 
-        this.currentPreview = this.posData[index];
+        this.currentPreview = {...this.posData[index], idx: index};
 
         //this.alertBackground = -1;
         //if (!this.$refs.boundItems) {
@@ -147,15 +135,6 @@ export default {
       immediate: true
     }
   },
-  methods: {
-    handlePageChange(page) {
-      let iPage = page - 1;
-      let start = iPage * this.pageSize;
-      let end = start + this.pageSize - 1
-
-      this.locations = this.posData.slice(start, end);
-    }
-  },
 }
 </script>
 
@@ -168,21 +147,6 @@ export default {
 .position-item {
   padding: 10px;
   border-radius: 6px;
-}
-
-.alert-bg {
-  background: #ffffff;
-  animation: fadeBackground 3s;
-  animation-fill-mode: forwards;
-}
-
-@keyframes fadeBackground {
-  from {
-    background-color: #d0705a;
-  }
-  to {
-    background-color: #ffffff;
-  }
 }
 
 .demo-tabs > .el-tabs__content {

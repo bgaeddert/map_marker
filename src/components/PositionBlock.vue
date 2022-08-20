@@ -30,7 +30,7 @@
     </el-row>
     <el-row :gutter="10">
       <el-col :span="12">
-        <el-select v-model="propertyType" placeholder="Select">
+        <el-select v-model="propertyType" placeholder="Select" @change="handleChange()">
           <el-option
               v-for="item in typeOptions"
               :key="item.value"
@@ -51,16 +51,17 @@ export default {
   name: "PositionBlock",
   methods: {
     handleChange() {
+      const updated = {
+        title: this.propertyTitle,
+        latitude: this.propertyLatitude,
+        longitude: this.propertyLongitude,
+        imageLink: this.propertyImageLink,
+        link: this.propertyLink,
+        type: this.propertyType
+      }
       this.$emit("update-property", {
         idx: this.idx,
-        property: {
-          title: this.propertyTitle,
-          latitude: this.propertyLatitude,
-          longitude: this.propertyLongitude,
-          imageLink: this.propertyImageLink,
-          link: this.propertyLink,
-          type: this.type
-        }
+        property: updated
       })
     },
     handleLatLngChange() {

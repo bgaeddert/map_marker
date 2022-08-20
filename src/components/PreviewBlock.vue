@@ -6,7 +6,7 @@
         @click="handleCenter"
     />
     <div style="padding: 14px">
-      <h3>{{ title }}</h3>
+      <h3>({{idx}}) {{ title }}</h3>
       <el-row>
         <el-col>
           <div v-for="(item, i) in details" v-bind:key="i">{{ item.label }}: {{ item.value }}</div>
@@ -21,8 +21,7 @@ export default {
   name: "PreviewBlock",
   methods: {
     handleCenter() {
-      this.$emit("center-map", {lat: parseFloat(this.latitude), lng: parseFloat(this.longitude)}),
-          this.$emit("scroll-pos", this.idx)
+      this.$emit("center-map", {lat: parseFloat(this.latitude), lng: parseFloat(this.longitude)})
     }
   },
   props: {
@@ -36,8 +35,7 @@ export default {
     idx: Number,
   },
   emits: [
-    'center-map',
-    'scroll-pos'
+    'center-map'
   ],
 }
 </script>

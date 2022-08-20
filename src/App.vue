@@ -48,16 +48,16 @@ export default {
     GoogleMap
   },
   methods: {
+    handleAddProperty(property) {
+      this.posData.unshift(property)
+      this.saveData();
+    },
     handleUpdateProperty(event) {
       this.posData[event.idx] = event.property;
       this.saveData();
     },
     handleUpdateProperties(properties) {
       this.posData = properties;
-      this.saveData();
-    },
-    handleAddProperty(property) {
-      this.posData.push(property)
       this.saveData();
     },
     handleRemoveLastProperty() {
@@ -99,8 +99,8 @@ export default {
     }
   },
   mounted() {
-      this.posData = JSON.parse(localStorage.getItem("properties"));
-      this.typeConfigs = JSON.parse(localStorage.getItem("typeConfigs"));
+      this.posData = JSON.parse(localStorage.getItem("properties")) || [];
+      this.typeConfigs = JSON.parse(localStorage.getItem("typeConfigs")) || [];
   },
 }
 </script>

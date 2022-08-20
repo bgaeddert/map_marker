@@ -62,12 +62,12 @@ export default {
     }
   },
   mounted() {
-    this.typeConfigs = JSON.parse(localStorage.getItem("typeConfigs"));
+    this.typeConfigs = JSON.parse(localStorage.getItem("typeConfigs")) || [];
   },
   watch: {
     posData: {
       handler() {
-        let typeConfigs = JSON.parse(localStorage.getItem("typeConfigs"));
+        let typeConfigs = JSON.parse(localStorage.getItem("typeConfigs")) || [];
 
         this.liveConfigs = this.posData.reduce((acc, m) => {
           const temp = acc.find((t) => t.typeName === m.type);
